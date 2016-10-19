@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+//! Project version number for CLTokenInputView.
+FOUNDATION_EXPORT double CLTokenInputViewVersionNumber;
+
+//! Project version string for CLTokenInputView.
+FOUNDATION_EXPORT const unsigned char CLTokenInputViewVersionString[];
+
 #import "CLToken.h"
 
 #if __has_feature(objc_generics)
