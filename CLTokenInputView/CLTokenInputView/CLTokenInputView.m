@@ -313,6 +313,15 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 #pragma mark - UITextFieldDelegate
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    if ([self.delegate respondsToSelector:@selector(tokenInputViewShouldBeginEditing:)]) {
+        return [self.delegate tokenInputViewShouldBeginEditing:self];
+    } else {
+        return YES;
+    }
+}
+
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     if ([self.delegate respondsToSelector:@selector(tokenInputViewDidBeginEditing:)]) {
@@ -413,17 +422,26 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (void)tokenViewDidRequestDelete:(CLTokenView *)tokenView replaceWithText:(NSString *)replacementText
 {
-    // First, refocus the text field
-    [self.textField becomeFirstResponder];
-    if (replacementText.length > 0) {
-        self.textField.text = replacementText;
-    }
-    // Then remove the view from our data
     NSInteger index = [self.tokenViews indexOfObject:tokenView];
     if (index == NSNotFound) {
         return;
     }
+
+    if ([self.delegate respondsToSelector:@selector(tokenInputView:shouldRemoveToken:)]) {
+        CLToken *removedToken = self.tokens[index];
+        if ([self.delegate tokenInputView:self shouldRemoveToken:removedToken] == NO) {
+            return;
+        }
+    }
+
+    // Remove the view from our data
     [self removeTokenAtIndex:index notifyDelegate:YES];
+
+    // Refocus the text field
+    [self.textField becomeFirstResponder];
+    if (replacementText.length > 0) {
+        self.textField.text = replacementText;
+    }
 }
 
 - (void)tokenViewDidRequestSelection:(CLTokenView *)tokenView

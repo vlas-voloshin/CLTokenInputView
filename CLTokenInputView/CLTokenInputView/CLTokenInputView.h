@@ -24,14 +24,19 @@ NS_ASSUME_NONNULL_BEGIN
 @optional
 
 /**
+ *  Asks the delegate if editing should stop in the text field
+ */
+- (BOOL)tokenInputViewShouldBeginEditing:(CLTokenInputView *)view;
+
+/**
  *  Called when the text field begins editing
  */
-- (void)tokenInputViewDidEndEditing:(CLTokenInputView *)view;
+- (void)tokenInputViewDidBeginEditing:(CLTokenInputView *)view;
 
 /**
  *  Called when the text field ends editing
  */
-- (void)tokenInputViewDidBeginEditing:(CLTokenInputView *)view;
+- (void)tokenInputViewDidEndEditing:(CLTokenInputView *)view;
 
 /**
  * Called when the text field should return
@@ -46,6 +51,10 @@ NS_ASSUME_NONNULL_BEGIN
  * Called when a token has been added. You should use this opportunity to update your local list of selected items.
  */
 - (void)tokenInputView:(CLTokenInputView *)view didAddToken:(CLToken *)token;
+/**
+ * Asks the delegate whether the specified token should be removed.
+ */
+- (BOOL)tokenInputView:(CLTokenInputView *)view shouldRemoveToken:(CLToken *)token;
 /**
  * Called when a token has been removed. You should use this opportunity to update your local list of selected items.
  */
