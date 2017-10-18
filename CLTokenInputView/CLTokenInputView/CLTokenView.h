@@ -13,7 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class CLTokenView;
-@protocol CLTokenViewDelegate <NSObject>
+@protocol CLTokenViewDelegate <UITextInputTraits>
 
 - (void)tokenViewDidRequestDelete:(CLTokenView *)tokenView replaceWithText:(nullable NSString *)replacementText;
 - (BOOL)tokenViewShouldSelect:(CLTokenView *)tokenView;

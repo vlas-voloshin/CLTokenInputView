@@ -11,6 +11,8 @@
 #import "CLBackspaceDetectingTextField.h"
 #import "CLTokenView.h"
 
+#import <objc/runtime.h>
+
 static CGFloat const HSPACE = 0.0;
 static CGFloat const TEXT_FIELD_HSPACE = 4.0; // Note: Same as CLTokenView.PADDING_X
 static CGFloat const VSPACE = 4.0;
@@ -405,32 +407,31 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 }
 
 
-#pragma mark - Text Field Customization
+#pragma mark - UITextInputTraits support
 
-- (void)setKeyboardType:(UIKeyboardType)keyboardType
++ (BOOL)isUITextInputTraitsSelector:(SEL)selector
 {
-    _keyboardType = keyboardType;
-    self.textField.keyboardType = _keyboardType;
+    struct objc_method_description desc = protocol_getMethodDescription(@protocol(UITextInputTraits), selector, NO, YES);
+    return desc.name != NULL && desc.types != NULL;
 }
 
-- (void)setAutocapitalizationType:(UITextAutocapitalizationType)autocapitalizationType
+- (BOOL)respondsToSelector:(SEL)aSelector
 {
-    _autocapitalizationType = autocapitalizationType;
-    self.textField.autocapitalizationType = _autocapitalizationType;
+    if ([self.class isUITextInputTraitsSelector:aSelector]) {
+        return [self.textField respondsToSelector:aSelector];
+    } else {
+        return [super respondsToSelector:aSelector];
+    }
 }
 
-- (void)setAutocorrectionType:(UITextAutocorrectionType)autocorrectionType
+- (id)forwardingTargetForSelector:(SEL)aSelector
 {
-    _autocorrectionType = autocorrectionType;
-    self.textField.autocorrectionType = _autocorrectionType;
+    if ([self.class isUITextInputTraitsSelector:aSelector]) {
+        return self.textField;
+    } else {
+        return [super forwardingTargetForSelector:aSelector];
+    }
 }
-
-- (void)setKeyboardAppearance:(UIKeyboardAppearance)keyboardAppearance
-{
-    _keyboardAppearance = keyboardAppearance;
-    self.textField.keyboardAppearance = _keyboardAppearance;
-}
-
 
 #pragma mark - Measurements (text field offset, etc.)
 

@@ -9,6 +9,7 @@
 #import "CLTokenView.h"
 
 #import <QuartzCore/QuartzCore.h>
+#import <objc/runtime.h>
 
 static CGFloat const PADDING_X = 4.0;
 static CGFloat const PADDING_Y = 2.0;
@@ -229,6 +230,30 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 - (UITextAutocorrectionType)autocorrectionType
 {
     return UITextAutocorrectionTypeNo;
+}
+
++ (BOOL)isUITextInputTraitsSelector:(SEL)selector
+{
+    struct objc_method_description desc = protocol_getMethodDescription(@protocol(UITextInputTraits), selector, NO, YES);
+    return desc.name != NULL && desc.types != NULL;
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector
+{
+    if ([self.class isUITextInputTraitsSelector:aSelector]) {
+        return [self.delegate respondsToSelector:aSelector];
+    } else {
+        return [super respondsToSelector:aSelector];
+    }
+}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector
+{
+    if ([self.class isUITextInputTraitsSelector:aSelector]) {
+        return self.delegate;
+    } else {
+        return [super forwardingTargetForSelector:aSelector];
+    }
 }
 
 

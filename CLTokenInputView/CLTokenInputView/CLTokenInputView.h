@@ -78,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface CLTokenInputView : UIView
+@interface CLTokenInputView : UIView <UITextInputTraits>
 
 @property (weak, nonatomic, nullable) IBOutlet NSObject <CLTokenInputViewDelegate> *delegate;
 /** An optional view that shows up presumably on the first line */
@@ -89,10 +89,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic, nullable) IBInspectable UIColor *fieldColor;
 @property (copy, nonatomic, nullable) IBInspectable NSString *placeholderText;
 @property (strong, nonatomic, nullable) UIView *accessoryView;
-@property (assign, nonatomic) IBInspectable UIKeyboardType keyboardType;
-@property (assign, nonatomic) IBInspectable UITextAutocapitalizationType autocapitalizationType;
-@property (assign, nonatomic) IBInspectable UITextAutocorrectionType autocorrectionType;
-@property (assign, nonatomic) IBInspectable UIKeyboardAppearance keyboardAppearance;
 /** 
  * Optional additional characters to trigger the tokenization process (and call the delegate
  * with `tokenInputView:tokenForText:`
