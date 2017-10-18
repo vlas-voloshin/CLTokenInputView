@@ -113,7 +113,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
     [self.tokens addObject:token];
     CLTokenView *tokenView = [[CLTokenView alloc] initWithToken:token font:self.textField.font];
-    tokenView.hideUnselectedComma = !self.editing;
     tokenView.tintColor = self.tintColor;
     tokenView.delegate = self;
     CGSize intrinsicSize = tokenView.intrinsicContentSize;
@@ -125,6 +124,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
         [self.delegate tokenInputView:self didAddToken:token];
     }
 
+    [self updateTokenViewCommas];
     [self updatePlaceholderTextVisibility];
     [self repositionViews];
 }
@@ -151,6 +151,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     if (shouldNotifyDelegate && [self.delegate respondsToSelector:@selector(tokenInputView:didRemoveToken:)]) {
         [self.delegate tokenInputView:self didRemoveToken:removedToken];
     }
+    [self updateTokenViewCommas];
     [self updatePlaceholderTextVisibility];
     [self repositionViews];
 }
@@ -290,6 +291,15 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     }
 }
 
+- (void)updateTokenViewCommas
+{
+    BOOL isEditing = self.isEditing;
+    [self.tokenViews enumerateObjectsUsingBlock:^(CLTokenView *tokenView, NSUInteger index, BOOL *stop) {
+        BOOL isLastToken = (index == self.tokenViews.count - 1);
+        tokenView.hideUnselectedComma = isLastToken && isEditing == NO;
+    }];
+}
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
@@ -327,7 +337,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     if ([self.delegate respondsToSelector:@selector(tokenInputViewDidBeginEditing:)]) {
         [self.delegate tokenInputViewDidBeginEditing:self];
     }
-    self.tokenViews.lastObject.hideUnselectedComma = NO;
+    [self updateTokenViewCommas];
     [self unselectAllTokenViewsAnimated:YES];
 }
 
@@ -336,7 +346,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     if ([self.delegate respondsToSelector:@selector(tokenInputViewDidEndEditing:)]) {
         [self.delegate tokenInputViewDidEndEditing:self];
     }
-    self.tokenViews.lastObject.hideUnselectedComma = YES;
+    [self updateTokenViewCommas];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
