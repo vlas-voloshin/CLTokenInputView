@@ -102,6 +102,11 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (void)addToken:(CLToken *)token
 {
+    [self addToken:token notifyDelegate:NO];
+}
+
+- (void)addToken:(CLToken *)token notifyDelegate:(BOOL)shouldNotifyDelegate
+{
     if ([self.tokens containsObject:token]) {
         return;
     }
@@ -114,13 +119,10 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     tokenView.frame = CGRectMake(0, 0, intrinsicSize.width, intrinsicSize.height);
     [self.tokenViews addObject:tokenView];
     [self addSubview:tokenView];
-    self.textField.text = @"";
-    if ([self.delegate respondsToSelector:@selector(tokenInputView:didAddToken:)]) {
+
+    if (shouldNotifyDelegate && [self.delegate respondsToSelector:@selector(tokenInputView:didAddToken:)]) {
         [self.delegate tokenInputView:self didAddToken:token];
     }
-
-    // Clearing text programmatically doesn't call this automatically
-    [self onTextFieldDidChange:self.textField];
 
     [self updatePlaceholderTextVisibility];
     [self repositionViews];
@@ -132,10 +134,10 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     if (index == NSNotFound) {
         return;
     }
-    [self removeTokenAtIndex:index];
+    [self removeTokenAtIndex:index notifyDelegate:NO];
 }
 
-- (void)removeTokenAtIndex:(NSInteger)index
+- (void)removeTokenAtIndex:(NSInteger)index notifyDelegate:(BOOL)shouldNotifyDelegate
 {
     if (index == NSNotFound) {
         return;
@@ -145,7 +147,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     [self.tokenViews removeObjectAtIndex:index];
     CLToken *removedToken = self.tokens[index];
     [self.tokens removeObjectAtIndex:index];
-    if ([self.delegate respondsToSelector:@selector(tokenInputView:didRemoveToken:)]) {
+    if (shouldNotifyDelegate && [self.delegate respondsToSelector:@selector(tokenInputView:didRemoveToken:)]) {
         [self.delegate tokenInputView:self didRemoveToken:removedToken];
     }
     [self updatePlaceholderTextVisibility];
@@ -165,7 +167,8 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
         [self.delegate respondsToSelector:@selector(tokenInputView:tokenForText:)]) {
         token = [self.delegate tokenInputView:self tokenForText:text];
         if (token != nil) {
-            [self addToken:token];
+            [self addToken:token notifyDelegate:YES];
+
             self.textField.text = @"";
             [self onTextFieldDidChange:self.textField];
         }
@@ -419,7 +422,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     if (index == NSNotFound) {
         return;
     }
-    [self removeTokenAtIndex:index];
+    [self removeTokenAtIndex:index notifyDelegate:YES];
 }
 
 - (void)tokenViewDidRequestSelection:(CLTokenView *)tokenView

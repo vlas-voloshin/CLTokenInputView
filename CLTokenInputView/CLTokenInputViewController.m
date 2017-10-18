@@ -158,11 +158,20 @@
 
     NSString *name = self.filteredNames[indexPath.row];
     CLToken *token = [[CLToken alloc] initWithDisplayText:name context:nil];
+
+    CLTokenInputView *inputView;
     if (self.tokenInputView.isEditing) {
-        [self.tokenInputView addToken:token];
+        inputView = self.tokenInputView;
+    } else if (self.secondTokenInputView.isEditing) {
+        inputView = self.secondTokenInputView;
     }
-    else if(self.secondTokenInputView.isEditing){
-        [self.secondTokenInputView addToken:token];
+
+    if (inputView != nil) {
+        [inputView addToken:token];
+        [self tokenInputView:inputView didAddToken:token];
+        
+        inputView.text = @"";
+        [self tokenInputView:inputView didChangeText:@""];
     }
 }
 
