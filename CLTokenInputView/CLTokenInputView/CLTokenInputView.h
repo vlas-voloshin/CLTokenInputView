@@ -16,18 +16,6 @@ FOUNDATION_EXPORT const unsigned char CLTokenInputViewVersionString[];
 
 #import "CLToken.h"
 
-#if __has_feature(objc_generics)
-#define CL_GENERIC_ARRAY(type) NSArray<type>
-#define CL_GENERIC_MUTABLE_ARRAY(type) NSMutableArray<type>
-#define CL_GENERIC_SET(type) NSSet<type>
-#define CL_GENERIC_MUTABLE_SET(type) NSMutableSet<type>
-#else
-#define CL_GENERIC_ARRAY(type) NSArray
-#define CL_GENERIC_MUTABLE_ARRAY(type) NSMutableArray
-#define CL_GENERIC_SET(type) NSSet
-#define CL_GENERIC_MUTABLE_SET(type) NSMutableSet
-#endif
-
 NS_ASSUME_NONNULL_BEGIN
 
 @class CLTokenInputView;
@@ -99,10 +87,10 @@ NS_ASSUME_NONNULL_BEGIN
  * however, if you would like to trigger tokenization with additional characters (such as a comma,
  * or as a space), you can supply the list here.
  */
-@property (copy, nonatomic) CL_GENERIC_SET(NSString *) *tokenizationCharacters;
+@property (copy, nonatomic) NSSet<NSString *> *tokenizationCharacters;
 @property (assign, nonatomic) IBInspectable BOOL drawBottomBorder;
 
-@property (readonly, nonatomic) CL_GENERIC_ARRAY(CLToken *) *allTokens;
+@property (readonly, nonatomic) NSArray<CLToken *> *allTokens;
 @property (readonly, nonatomic, getter = isEditing) BOOL editing;
 @property (readonly, nonatomic) CGFloat textFieldDisplayOffset;
 @property (copy, nonatomic, nullable) NSString *text;

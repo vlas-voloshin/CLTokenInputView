@@ -42,10 +42,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    if (![self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-        self.tokenInputTopSpace.constant = 0.0;
-    }
+
     UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
     [infoButton addTarget:self action:@selector(onFieldInfoButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     self.tokenInputView.fieldName = @"To:";

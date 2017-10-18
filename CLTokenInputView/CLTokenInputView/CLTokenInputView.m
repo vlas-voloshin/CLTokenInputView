@@ -25,14 +25,12 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 @interface CLTokenInputView () <CLBackspaceDetectingTextFieldDelegate, CLTokenViewDelegate>
 
-@property (strong, nonatomic) CL_GENERIC_MUTABLE_ARRAY(CLToken *) *tokens;
-@property (strong, nonatomic) CL_GENERIC_MUTABLE_ARRAY(CLTokenView *) *tokenViews;
+@property (strong, nonatomic) NSMutableArray<CLToken *> *tokens;
+@property (strong, nonatomic) NSMutableArray<CLTokenView *> *tokenViews;
 @property (strong, nonatomic) CLBackspaceDetectingTextField *textField;
 @property (strong, nonatomic) UILabel *fieldLabel;
 
-
 @property (assign, nonatomic) CGFloat intrinsicContentHeight;
-@property (assign, nonatomic) CGFloat additionalTextFieldYOffset;
 
 @end
 
@@ -46,10 +44,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.textField.delegate = self;
-    self.additionalTextFieldYOffset = 0.0;
-    if (![self.textField respondsToSelector:@selector(defaultTextAttributes)]) {
-        self.additionalTextFieldYOffset = 1.5;
-    }
     [self.textField addTarget:self
                        action:@selector(onTextFieldDidChange:)
              forControlEvents:UIControlEventEditingChanged];
@@ -96,7 +90,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 #pragma mark - Tint color
 
-
 - (void)tintColorDidChange
 {
     for (UIView *tokenView in self.tokenViews) {
@@ -115,9 +108,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
     [self.tokens addObject:token];
     CLTokenView *tokenView = [[CLTokenView alloc] initWithToken:token font:self.textField.font];
-    if ([self respondsToSelector:@selector(tintColor)]) {
-        tokenView.tintColor = self.tintColor;
-    }
+    tokenView.tintColor = self.tintColor;
     tokenView.delegate = self;
     CGSize intrinsicSize = tokenView.intrinsicContentSize;
     tokenView.frame = CGRectMake(0, 0, intrinsicSize.width, intrinsicSize.height);
@@ -161,7 +152,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     [self repositionViews];
 }
 
-- (NSArray *)allTokens
+- (NSArray<CLToken *> *)allTokens
 {
     return [self.tokens copy];
 }
@@ -269,7 +260,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
     CGRect textFieldRect = self.textField.frame;
     textFieldRect.origin.x = curX;
-    textFieldRect.origin.y = curY + self.additionalTextFieldYOffset;
+    textFieldRect.origin.y = curY;
     textFieldRect.size.width = availableWidthForTextField;
     textFieldRect.size.height = STANDARD_ROW_HEIGHT;
     self.textField.frame = textFieldRect;
@@ -294,7 +285,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
         self.textField.placeholder = self.placeholderText;
     }
 }
-
 
 - (void)layoutSubviews
 {
@@ -346,9 +336,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     return shouldDoDefaultBehavior;
 }
 
-- (BOOL)                    textField:(UITextField *)textField
-        shouldChangeCharactersInRange:(NSRange)range
-                    replacementString:(NSString *)string
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     if (string.length > 0 && [self.tokenizationCharacters member:string]) {
         [self tokenizeTextfieldText];
@@ -407,14 +395,13 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 #pragma mark - Textfield text
 
-
 - (NSString *)text
 {
     return self.textField.text;
 }
 
-
--(void) setText:(NSString*)text {
+- (void)setText:(NSString *)text
+{
     self.textField.text = text;
 }
 
@@ -468,13 +455,11 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     return self.textField.editing;
 }
 
-
 - (void)beginEditing
 {
     [self.textField becomeFirstResponder];
     [self unselectAllTokenViewsAnimated:NO];
 }
-
 
 - (void)endEditing
 {
@@ -495,7 +480,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
         return;
     }
     NSString *oldFieldName = _fieldName;
-    _fieldName = fieldName;
+    _fieldName = [fieldName copy];
 
     self.fieldLabel.text = _fieldName;
     [self.fieldLabel invalidateIntrinsicContentSize];
@@ -535,7 +520,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     if (_placeholderText == placeholderText) {
         return;
     }
-    _placeholderText = placeholderText;
+    _placeholderText = [placeholderText copy];
     [self updatePlaceholderTextVisibility];
 }
 
@@ -565,9 +550,6 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     [self setNeedsDisplay];
 }
 
-
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
     [super drawRect:rect];

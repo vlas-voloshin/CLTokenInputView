@@ -31,14 +31,12 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 
 @implementation CLTokenView
 
-- (id)initWithToken:(CLToken *)token font:(nullable UIFont *)font
+- (instancetype)initWithToken:(CLToken *)token font:(nullable UIFont *)font
 {
     self = [super initWithFrame:CGRectZero];
     if (self) {
-        UIColor *tintColor = [UIColor colorWithRed:0.0823 green:0.4941 blue:0.9843 alpha:1.0];
-        if ([self respondsToSelector:@selector(tintColor)]) {
-            tintColor = self.tintColor;
-        }
+        UIColor *tintColor = self.tintColor;
+
         self.label = [[UILabel alloc] initWithFrame:CGRectMake(PADDING_X, PADDING_Y, 0, 0)];
         if (font) {
             self.label.font = font;
@@ -70,9 +68,6 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
         // Listen for taps
         UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGestureRecognizer:)];
         [self addGestureRecognizer:tapRecognizer];
-
-        [self setNeedsLayout];
-
     }
     return self;
 }
@@ -95,12 +90,10 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 
 #pragma mark - Tinting
 
-
 - (void)setTintColor:(UIColor *)tintColor
 {
-    if ([UIView instancesRespondToSelector:@selector(setTintColor:)]) {
-        super.tintColor = tintColor;
-    }
+    [super setTintColor:tintColor];
+
     self.label.textColor = tintColor;
     self.selectedBackgroundView.backgroundColor = tintColor;
     [self updateLabelAttributedText];
@@ -108,7 +101,6 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 
 
 #pragma mark - Hide Unselected Comma
-
 
 - (void)setHideUnselectedComma:(BOOL)hideUnselectedComma
 {
@@ -122,7 +114,7 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 
 #pragma mark - Taps
 
--(void)handleTapGestureRecognizer:(id)sender
+- (void)handleTapGestureRecognizer:(id)sender
 {
     [self.delegate tokenViewDidRequestSelection:self];
 }
@@ -173,7 +165,6 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 
 #pragma mark - Attributed Text
 
-
 - (void)updateLabelAttributedText
 {
     // Configure for the token, unselected shows "[displayText]," and selected is "[displayText]"
@@ -188,10 +179,7 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
                                                         NSForegroundColorAttributeName : [UIColor lightGrayColor]}];
     NSRange tintRange = [labelString rangeOfString:self.displayText];
     // Make the name part the system tint color
-    UIColor *tintColor = self.selectedBackgroundView.backgroundColor;
-    if ([UIView instancesRespondToSelector:@selector(tintColor)]) {
-        tintColor = self.tintColor;
-    }
+    UIColor *tintColor = self.tintColor;
     [attrString setAttributes:@{NSForegroundColorAttributeName : tintColor}
                         range:tintRange];
     self.label.attributedText = attrString;
@@ -214,15 +202,6 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
     labelFrame.size.width += PADDING_X*2.0;
     self.label.frame = labelFrame;
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 
 #pragma mark - UIKeyInput protocol
@@ -255,20 +234,19 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 
 #pragma mark - First Responder (needed to capture keyboard)
 
--(BOOL)canBecomeFirstResponder
+- (BOOL)canBecomeFirstResponder
 {
     return YES;
 }
 
-
--(BOOL)resignFirstResponder
+- (BOOL)resignFirstResponder
 {
     BOOL didResignFirstResponder = [super resignFirstResponder];
     [self setSelected:NO animated:NO];
     return didResignFirstResponder;
 }
 
--(BOOL)becomeFirstResponder
+- (BOOL)becomeFirstResponder
 {
     BOOL didBecomeFirstResponder = [super becomeFirstResponder];
     [self setSelected:YES animated:NO];
