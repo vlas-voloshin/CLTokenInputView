@@ -10,11 +10,11 @@
 
 @implementation CLToken
 
-- (id)initWithDisplayText:(NSString *)displayText context:(NSObject *)context
+- (instancetype)initWithDisplayText:(NSString *)displayText context:(NSObject *)context
 {
     self = [super init];
     if (self) {
-        self.displayText = displayText;
+        self.displayText = [displayText copy];
         self.context = context;
     }
     return self;
@@ -31,7 +31,7 @@
 
     CLToken *otherObject = (CLToken *)object;
     if ([otherObject.displayText isEqualToString:self.displayText] &&
-        [otherObject.context isEqual:self.context]) {
+        (otherObject.context == self.context || [otherObject.context isEqual:self.context])) {
         return YES;
     }
     return NO;
