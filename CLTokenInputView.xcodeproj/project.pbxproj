@@ -62,7 +62,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		65B16B7A18BC16F6003AA819 /* CLTokenInputView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CLTokenInputView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		65B16B7A18BC16F6003AA819 /* CLTokenInputViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CLTokenInputViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65B16B7D18BC16F6003AA819 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		65B16B7F18BC16F6003AA819 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		65B16B8118BC16F6003AA819 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -128,7 +128,7 @@
 		65B16B7B18BC16F6003AA819 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				65B16B7A18BC16F6003AA819 /* CLTokenInputView.app */,
+				65B16B7A18BC16F6003AA819 /* CLTokenInputViewDemo.app */,
 				F69812701DB7D281007F8FA9 /* CLTokenInputView.framework */,
 			);
 			name = Products;
@@ -206,9 +206,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		65B16B7918BC16F6003AA819 /* CLTokenInputView */ = {
+		65B16B7918BC16F6003AA819 /* CLTokenInputViewDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 65B16BA618BC16F7003AA819 /* Build configuration list for PBXNativeTarget "CLTokenInputView" */;
+			buildConfigurationList = 65B16BA618BC16F7003AA819 /* Build configuration list for PBXNativeTarget "CLTokenInputViewDemo" */;
 			buildPhases = (
 				65B16B7618BC16F6003AA819 /* Sources */,
 				65B16B7718BC16F6003AA819 /* Frameworks */,
@@ -220,9 +220,9 @@
 			dependencies = (
 				F69812761DB7D281007F8FA9 /* PBXTargetDependency */,
 			);
-			name = CLTokenInputView;
+			name = CLTokenInputViewDemo;
 			productName = CLTokenInputView;
-			productReference = 65B16B7A18BC16F6003AA819 /* CLTokenInputView.app */;
+			productReference = 65B16B7A18BC16F6003AA819 /* CLTokenInputViewDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 		F698126F1DB7D281007F8FA9 /* iOS Framework */ = {
@@ -271,7 +271,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				65B16B7918BC16F6003AA819 /* CLTokenInputView */,
+				65B16B7918BC16F6003AA819 /* CLTokenInputViewDemo */,
 				F698126F1DB7D281007F8FA9 /* iOS Framework */,
 			);
 		};
@@ -451,7 +451,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.getcluster.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
@@ -466,7 +465,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.getcluster.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
 		};
@@ -547,7 +545,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		65B16BA618BC16F7003AA819 /* Build configuration list for PBXNativeTarget "CLTokenInputView" */ = {
+		65B16BA618BC16F7003AA819 /* Build configuration list for PBXNativeTarget "CLTokenInputViewDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				65B16BA718BC16F7003AA819 /* Debug */,
