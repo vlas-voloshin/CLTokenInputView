@@ -114,7 +114,9 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 
 - (void)handleTapGestureRecognizer:(id)sender
 {
-    [self.delegate tokenViewDidRequestSelection:self];
+    if ([self.delegate tokenViewShouldSelect:self]) {
+        [self setSelected:YES animated:YES];
+    }
 }
 
 
@@ -240,14 +242,24 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 - (BOOL)resignFirstResponder
 {
     BOOL didResignFirstResponder = [super resignFirstResponder];
-    [self setSelected:NO animated:NO];
+    if (didResignFirstResponder) {
+        [self setSelected:NO animated:NO];
+    }
+    
     return didResignFirstResponder;
 }
 
 - (BOOL)becomeFirstResponder
 {
+    if ([self.delegate tokenViewShouldSelect:self] == NO) {
+        return NO;
+    }
+    
     BOOL didBecomeFirstResponder = [super becomeFirstResponder];
-    [self setSelected:YES animated:NO];
+    if (didBecomeFirstResponder) {
+        [self setSelected:YES animated:NO];
+    }
+
     return didBecomeFirstResponder;
 }
 

@@ -132,10 +132,9 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 - (void)removeToken:(CLToken *)token
 {
     NSInteger index = [self.tokens indexOfObject:token];
-    if (index == NSNotFound) {
-        return;
+    if (index != NSNotFound) {
+        [self removeTokenAtIndex:index notifyDelegate:NO];
     }
-    [self removeTokenAtIndex:index notifyDelegate:NO];
 }
 
 - (void)removeTokenAtIndex:(NSInteger)index notifyDelegate:(BOOL)shouldNotifyDelegate
@@ -176,6 +175,16 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
         }
     }
     return token;
+}
+
+- (CLToken *)tokenForTokenView:(CLTokenView *)tokenView
+{
+    NSInteger index = [self.tokenViews indexOfObject:tokenView];
+    if (index != NSNotFound) {
+        return self.tokens[index];
+    } else {
+        return nil;
+    }
 }
 
 
@@ -311,12 +320,28 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (void)textFieldWillDeleteBackwards:(UITextField *)textField
 {
-    if (textField.text.length == 0) {
-        CLTokenView *tokenView = self.tokenViews.lastObject;
-        if (tokenView) {
-            [self selectTokenView:tokenView animated:YES];
-            [self.textField resignFirstResponder];
-        }
+    if (textField.text.length > 0) {
+        return;
+    }
+
+    CLTokenView *tokenView = self.tokenViews.lastObject;
+    if (tokenView == nil) {
+        return;
+    }
+
+    CLToken *token = [self tokenForTokenView:tokenView];
+    if (token == nil) {
+        return;
+    }
+
+    BOOL shouldSelectToken = YES;
+    if ([self.delegate respondsToSelector:@selector(tokenInputView:shouldSelectToken:)]) {
+        shouldSelectToken = [self.delegate tokenInputView:self shouldSelectToken:token];
+    }
+
+    if (shouldSelectToken) {
+        [self selectTokenView:tokenView animated:YES];
+        [self.textField resignFirstResponder];
     }
 }
 
@@ -454,9 +479,18 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     }
 }
 
-- (void)tokenViewDidRequestSelection:(CLTokenView *)tokenView
+- (BOOL)tokenViewShouldSelect:(CLTokenView *)tokenView
 {
-    [self selectTokenView:tokenView animated:YES];
+    CLToken *token = [self tokenForTokenView:tokenView];
+    if (token == nil) {
+        return NO;
+    }
+
+    if ([self.delegate respondsToSelector:@selector(tokenInputView:shouldSelectToken:)]) {
+        return [self.delegate tokenInputView:self shouldSelectToken:token];
+    } else {
+        return YES;
+    }
 }
 
 

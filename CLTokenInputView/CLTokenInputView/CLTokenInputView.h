@@ -59,6 +59,10 @@ NS_ASSUME_NONNULL_BEGIN
  * Called when a token has been removed. You should use this opportunity to update your local list of selected items.
  */
 - (void)tokenInputView:(CLTokenInputView *)view didRemoveToken:(CLToken *)token;
+/**
+ * Asks the delegate whether the specified token should be selected.
+ */
+- (BOOL)tokenInputView:(CLTokenInputView *)view shouldSelectToken:(CLToken *)token;
 /** 
  * Called when the user attempts to press the Return key with text partially typed.
  * @return A CLToken for a match (typically the first item in the matching results),
