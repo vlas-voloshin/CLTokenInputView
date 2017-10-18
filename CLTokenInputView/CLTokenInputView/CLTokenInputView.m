@@ -305,20 +305,15 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 #pragma mark - CLBackspaceDetectingTextFieldDelegate
 
-- (void)textFieldDidDeleteBackwards:(UITextField *)textField
+- (void)textFieldWillDeleteBackwards:(UITextField *)textField
 {
-    // Delay selecting the next token slightly, so that on iOS 8
-    // the deleteBackward on CLTokenView is not called immediately,
-    // causing a double-delete
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (textField.text.length == 0) {
-            CLTokenView *tokenView = self.tokenViews.lastObject;
-            if (tokenView) {
-                [self selectTokenView:tokenView animated:YES];
-                [self.textField resignFirstResponder];
-            }
+    if (textField.text.length == 0) {
+        CLTokenView *tokenView = self.tokenViews.lastObject;
+        if (tokenView) {
+            [self selectTokenView:tokenView animated:YES];
+            [self.textField resignFirstResponder];
         }
-    });
+    }
 }
 
 

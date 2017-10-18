@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class CLBackspaceDetectingTextField;
 @protocol CLBackspaceDetectingTextFieldDelegate <UITextFieldDelegate>
 
-- (void)textFieldDidDeleteBackwards:(UITextField *)textField;
+- (void)textFieldWillDeleteBackwards:(UITextField *)textField;
 
 @end
 
@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since v1.0
  */
-@interface CLBackspaceDetectingTextField : UITextField <UIKeyInput>
+@interface CLBackspaceDetectingTextField : UITextField
 
 @property (weak, nonatomic, nullable) NSObject <CLBackspaceDetectingTextFieldDelegate> *delegate;
 
