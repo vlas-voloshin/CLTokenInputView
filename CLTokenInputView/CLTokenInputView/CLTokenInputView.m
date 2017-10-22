@@ -302,6 +302,14 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     } else {
         self.textField.placeholder = self.placeholderText;
     }
+
+    [self updateTextFieldAccessibilityLabel];
+}
+
+- (void)updateTextFieldAccessibilityLabel
+{
+    BOOL accessibilityValueWillInheritPlaceholder = self.textField.hasText == NO && self.textField.placeholder != nil;
+    self.textField.accessibilityLabel = accessibilityValueWillInheritPlaceholder ? nil : self.placeholderText;
 }
 
 - (void)updateTokenViewCommas
@@ -319,6 +327,25 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     [self repositionViews];
 }
 
+- (NSArray *)accessibilityElements
+{
+    NSMutableArray *elements = [NSMutableArray array];
+    if (self.fieldView != nil) {
+        [elements addObject:self.fieldView];
+    }
+    if (self.fieldLabel != nil) {
+        [elements addObject:self.fieldLabel];
+    }
+    [elements addObjectsFromArray:self.tokenViews];
+    if (self.isEditable) {
+        [elements addObject:self.textField];
+    }
+    if (self.accessoryView != nil) {
+        [elements addObject:self.accessoryView];
+    }
+
+    return [elements copy];
+}
 
 #pragma mark - CLBackspaceDetectingTextFieldDelegate
 
@@ -346,6 +373,8 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     if (shouldSelectToken) {
         [self selectTokenView:tokenView animated:YES];
         [self.textField resignFirstResponder];
+
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, tokenView);
     }
 }
 
@@ -407,6 +436,8 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (void)onTextFieldDidChange:(id)sender
 {
+    [self updateTextFieldAccessibilityLabel];
+
     if ([self.delegate respondsToSelector:@selector(tokenInputView:didChangeText:)]) {
         [self.delegate tokenInputView:self didChangeText:self.textField.text];
     }
@@ -458,6 +489,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 - (void)setText:(NSString *)text
 {
     self.textField.text = text;
+    [self updateTextFieldAccessibilityLabel];
 }
 
 #pragma mark - CLTokenViewDelegate

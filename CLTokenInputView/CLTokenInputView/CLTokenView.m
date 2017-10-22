@@ -289,4 +289,21 @@ static NSString *const UNSELECTED_LABEL_NO_COMMA_FORMAT = @"%@";
 }
 
 
+#pragma mark - Accessibility
+
+- (BOOL)isAccessibilityElement
+{
+    return YES;
+}
+
+- (NSString *)accessibilityLabel
+{
+    return self.displayText;
+}
+
+- (UIAccessibilityTraits)accessibilityTraits
+{
+    return self.selected ? UIAccessibilityTraitSelected : UIAccessibilityTraitNone;
+}
+
 @end
