@@ -40,6 +40,8 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (void)commonInit
 {
+    _editable = YES;
+
     self.textField = [[CLBackspaceDetectingTextField alloc] initWithFrame:self.bounds];
     self.textField.backgroundColor = [UIColor clearColor];
     self.textField.keyboardType = UIKeyboardTypeEmailAddress;
@@ -352,6 +354,10 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+    if (self.isEditable == NO) {
+        return NO;
+    }
+
     if ([self.delegate respondsToSelector:@selector(tokenInputViewShouldBeginEditing:)]) {
         return [self.delegate tokenInputViewShouldBeginEditing:self];
     } else {
@@ -458,6 +464,10 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (void)tokenViewDidRequestDelete:(CLTokenView *)tokenView replaceWithText:(NSString *)replacementText
 {
+    if (self.isEditable == NO) {
+        return;
+    }
+
     NSInteger index = [self.tokenViews indexOfObject:tokenView];
     if (index == NSNotFound) {
         return;
@@ -483,6 +493,10 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (BOOL)tokenViewShouldSelect:(CLTokenView *)tokenView
 {
+    if (self.isEditable == NO) {
+        return NO;
+    }
+
     CLToken *token = [self tokenForTokenView:tokenView];
     if (token == nil) {
         return NO;
@@ -518,6 +532,13 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 #pragma mark - Editing
 
+- (void)setEditable:(BOOL)editable
+{
+    _editable = editable;
+
+    self.textField.userInteractionEnabled = editable;
+}
+
 - (BOOL)isEditing
 {
     return self.textField.editing;
@@ -525,6 +546,10 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
 
 - (void)beginEditing
 {
+    if (self.isEditable == NO) {
+        return;
+    }
+
     [self.textField becomeFirstResponder];
     [self unselectAllTokenViewsAnimated:NO];
 }
