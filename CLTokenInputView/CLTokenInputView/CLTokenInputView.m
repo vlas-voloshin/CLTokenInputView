@@ -477,6 +477,7 @@ static CGFloat const FIELD_MARGIN_X = 4.0; // Note: Same as CLTokenView.PADDING_
     [self.textField becomeFirstResponder];
     if (replacementText.length > 0) {
         self.textField.text = replacementText;
+        [self onTextFieldDidChange:self.textField];
     }
 }
 
